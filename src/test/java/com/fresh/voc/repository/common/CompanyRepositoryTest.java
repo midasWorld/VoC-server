@@ -14,7 +14,7 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import com.fresh.voc.model.common.Company;
 import com.fresh.voc.model.common.CompanyType;
 
-import jakarta.validation.ValidationException;
+import javax.validation.ValidationException;
 
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 @DataJpaTest

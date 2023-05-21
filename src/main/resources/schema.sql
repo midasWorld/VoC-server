@@ -40,6 +40,7 @@ CREATE TABLE voc
 CREATE TABLE penalty
 (
     id          BIGINT       NOT NULL PRIMARY KEY AUTO_INCREMENT,
+    content     VARCHAR(255) NOT NULL               COMMENT '패널티 내용',
     amount      DECIMAL      NOT NULL DEFAULT 0     COMMENT '패널티 금액',
     voc_id      BIGINT       NOT NULL               COMMENT 'VOC FK',
     confirmed   BOOLEAN      NOT NULL DEFAULT false COMMENT '귀책 인정 승인 여부',

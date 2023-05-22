@@ -11,10 +11,10 @@ INSERT INTO person(id, name, company_id, phone) VALUES
   (4, '도철 담당자', 2, '010-1111-2222');
 
 INSERT INTO voc(id, due_type, due_target_id, due_reason) VALUES
-    (1, 'CLIENT', 1, '배송이 하루 늦음');
+    (1, 'SHIPPING', 1, '배송이 하루 늦음');
 
-INSERT INTO penalty(id, amount, voc_id, confirmed, objected) VALUES
-    (1, 30000, 1, true, false);
+INSERT INTO penalty(id, content, amount, voc_id, confirmed, objected) VALUES
+    (1, '배송 지연 배상금 지불', 30000, 1, true, false);
 
 INSERT INTO compensation(id, amount, voc_id) VALUES
     (1, 30000, 1);

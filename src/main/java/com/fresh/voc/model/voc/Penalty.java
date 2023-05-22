@@ -7,7 +7,11 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToOne;
 import javax.validation.constraints.DecimalMin;
+import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
+
+import com.fresh.voc.model.BaseEntity;
+
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -15,11 +19,14 @@ import lombok.NoArgsConstructor;
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Entity
-public class Panalty {
+public class Penalty extends BaseEntity {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
+
+	@NotBlank
+	private String content;
 
 	@DecimalMin("0")
 	private Long amount;
@@ -33,7 +40,8 @@ public class Panalty {
 	@NotNull
 	private Boolean objected;
 
-	public Panalty(Long amount, Voc voc, Boolean confirmed, Boolean objected) {
+	public Penalty(String content, Long amount, Voc voc, Boolean confirmed, Boolean objected) {
+		this.content = content;
 		this.amount = amount;
 		this.voc = voc;
 		this.confirmed = confirmed;
@@ -44,6 +52,7 @@ public class Panalty {
 	public String toString() {
 		return new org.apache.commons.lang3.builder.ToStringBuilder(this)
 			.append("id", id)
+			.append("content", content)
 			.append("amount", amount)
 			.append("voc", voc)
 			.append("confirmed", confirmed)

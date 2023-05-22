@@ -7,9 +7,11 @@ import org.apache.commons.lang3.builder.ToStringBuilder;
 
 import com.fresh.voc.model.voc.DueType;
 
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 
 @Getter
+@EqualsAndHashCode
 public class VocCreateRequest {
 
 	@NotNull

@@ -1,7 +1,6 @@
 package com.fresh.voc.model.voc;
 
-import com.fresh.voc.model.BaseEntity;
-import com.fresh.voc.model.common.Person;
+import java.util.Objects;
 
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
@@ -12,7 +11,14 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToOne;
 import javax.validation.constraints.NotBlank;
+
+import org.apache.commons.lang3.builder.HashCodeBuilder;
+
+import com.fresh.voc.model.BaseEntity;
+import com.fresh.voc.model.common.Person;
+
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -36,10 +42,33 @@ public class Voc extends BaseEntity {
 	@NotBlank
 	private String dueReason;
 
+	@OneToOne(mappedBy = "voc", fetch = FetchType.LAZY)
+	private Penalty penalty;
+
+	@OneToOne(mappedBy = "voc", fetch = FetchType.LAZY)
+	private Compensation compensation;
+
 	public Voc(DueType dueType, Person dueTarget, String dueReason) {
+		this(dueType, dueTarget, dueReason, null, null);
+	}
+
+	public Voc(DueType dueType, Person dueTarget, String dueReason, Penalty penalty, Compensation compensation) {
 		this.dueType = dueType;
 		this.dueTarget = dueTarget;
 		this.dueReason = dueReason;
+		this.penalty = penalty;
+		this.compensation = compensation;
+	}
+
+	@Override
+	public int hashCode() {
+		return new HashCodeBuilder(17, 37).append(id)
+			.append(dueType)
+			.append(dueTarget)
+			.append(dueReason)
+			.append(penalty)
+			.append(compensation)
+			.toHashCode();
 	}
 
 	@Override

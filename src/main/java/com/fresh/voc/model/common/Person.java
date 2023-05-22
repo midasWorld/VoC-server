@@ -1,5 +1,7 @@
 package com.fresh.voc.model.common;
 
+import java.util.Objects;
+
 import org.apache.commons.lang3.builder.ToStringBuilder;
 
 import com.fresh.voc.model.BaseEntity;
@@ -42,6 +44,22 @@ public class Person extends BaseEntity {
 		this.name = name;
 		this.company = company;
 		this.phone = phone;
+	}
+
+	@Override
+	public boolean equals(Object o) {
+		if (this == o) return true;
+		if (o == null || getClass() != o.getClass()) return false;
+		Person person = (Person)o;
+		return Objects.equals(id, person.id)
+			&& Objects.equals(name, person.name)
+			&& Objects.equals(phone, person.phone)
+			&& Objects.equals(company.getId(), person.company.getId());
+	}
+
+	@Override
+	public int hashCode() {
+		return Objects.hash(id, name, company, phone);
 	}
 
 	@Override

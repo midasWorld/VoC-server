@@ -2,6 +2,7 @@ package com.fresh.voc.service.dto;
 
 import org.apache.commons.lang3.builder.ToStringBuilder;
 
+import com.fresh.voc.model.voc.Compensation;
 import com.fresh.voc.model.voc.DueType;
 import com.fresh.voc.model.voc.Penalty;
 import com.fresh.voc.model.voc.Voc;
@@ -20,17 +21,18 @@ public class VocDto {
 	private final CompensationDto compensation;
 
 	public VocDto(Voc voc) {
+		this(voc, voc.getPenalty(), voc.getCompensation());
+	}
+
+	public VocDto(Voc voc, Penalty penalty, Compensation compensation) {
 		this.id = voc.getId();
 		this.dueType = voc.getDueType();
 		this.dueTargetName = voc.getDueTarget().getName();
 		this.dueReason = voc.getDueReason();
-
-		Penalty panalty = voc.getPenalty();
-		this.penaltyContent = panalty.getContent();
-		this.confirmed = panalty.getConfirmed();
-		this.objected = panalty.getObjected();
-
-		this.compensation = new CompensationDto(voc.getCompensation());
+		this.penaltyContent = penalty.getContent();
+		this.confirmed = penalty.getConfirmed();
+		this.objected = penalty.getObjected();
+		this.compensation = new CompensationDto(compensation);
 	}
 
 	@Override

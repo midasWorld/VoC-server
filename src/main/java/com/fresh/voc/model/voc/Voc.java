@@ -61,6 +61,17 @@ public class Voc extends BaseEntity {
 	}
 
 	@Override
+	public boolean equals(Object o) {
+		if (this == o) return true;
+		if (o == null || getClass() != o.getClass()) return false;
+		Voc voc = (Voc)o;
+		return Objects.equals(id, voc.id)
+			&& dueType == voc.dueType
+			&& Objects.equals(dueReason, voc.dueReason)
+			&& Objects.equals(dueTarget.getId(), voc.dueTarget.getId());
+	}
+
+	@Override
 	public int hashCode() {
 		return new HashCodeBuilder(17, 37).append(id)
 			.append(dueType)

@@ -15,10 +15,10 @@ public class VocDto {
 	private final DueType dueType;
 	private final String dueTargetName;
 	private final String dueReason;
-	private final String penaltyContent;
-	private final Boolean confirmed;
-	private final Boolean objected;
-	private final CompensationDto compensation;
+	private String penaltyContent;
+	private Boolean confirmed;
+	private Boolean objected;
+	private CompensationDto compensation;
 
 	public VocDto(Voc voc) {
 		this(voc, voc.getPenalty(), voc.getCompensation());
@@ -29,10 +29,14 @@ public class VocDto {
 		this.dueType = voc.getDueType();
 		this.dueTargetName = voc.getDueTarget().getName();
 		this.dueReason = voc.getDueReason();
-		this.penaltyContent = penalty.getContent();
-		this.confirmed = penalty.getConfirmed();
-		this.objected = penalty.getObjected();
-		this.compensation = new CompensationDto(compensation);
+		if (penalty != null) {
+			this.penaltyContent = penalty.getContent();
+			this.confirmed = penalty.getConfirmed();
+			this.objected = penalty.getObjected();
+		}
+		if (compensation != null) {
+			this.compensation = new CompensationDto(compensation);
+		}
 	}
 
 	@Override

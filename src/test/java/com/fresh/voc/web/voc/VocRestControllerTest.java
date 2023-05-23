@@ -42,8 +42,8 @@ import com.fresh.voc.model.voc.Compensation;
 import com.fresh.voc.model.voc.Penalty;
 import com.fresh.voc.model.voc.Voc;
 import com.fresh.voc.service.VocService;
-import com.fresh.voc.service.dto.PenaltyCreateRequest;
-import com.fresh.voc.service.dto.VocCreateRequest;
+import com.fresh.voc.service.dto.request.PenaltyCreateRequest;
+import com.fresh.voc.service.dto.request.VocCreateRequest;
 import com.fresh.voc.service.dto.VocSearchDto;
 import com.fresh.voc.web.ApiResult;
 

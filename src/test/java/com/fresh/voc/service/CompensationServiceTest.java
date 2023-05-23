@@ -25,7 +25,7 @@ import com.fresh.voc.model.common.Person;
 import com.fresh.voc.model.voc.Compensation;
 import com.fresh.voc.model.voc.Penalty;
 import com.fresh.voc.model.voc.Voc;
-import com.fresh.voc.service.dto.CompensationCreateRequest;
+import com.fresh.voc.service.dto.request.CompensationCreateRequest;
 import com.fresh.voc.service.dto.CompensationSearchDto;
 
 @Transactional

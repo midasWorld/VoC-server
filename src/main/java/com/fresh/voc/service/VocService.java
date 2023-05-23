@@ -12,8 +12,8 @@ import com.fresh.voc.model.voc.Voc;
 import com.fresh.voc.repository.common.PersonRepository;
 import com.fresh.voc.repository.voc.PenaltyRepository;
 import com.fresh.voc.repository.voc.VocRepository;
-import com.fresh.voc.service.dto.PenaltyCreateRequest;
-import com.fresh.voc.service.dto.VocCreateRequest;
+import com.fresh.voc.service.dto.request.PenaltyCreateRequest;
+import com.fresh.voc.service.dto.request.VocCreateRequest;
 import com.fresh.voc.service.dto.VocSearchDto;
 
 import lombok.RequiredArgsConstructor;

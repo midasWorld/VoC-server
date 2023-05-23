@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.fresh.voc.service.CompensationService;
-import com.fresh.voc.service.dto.CompensationCreateRequest;
+import com.fresh.voc.service.dto.request.CompensationCreateRequest;
 import com.fresh.voc.service.dto.CompensationSearchDto;
 import com.fresh.voc.web.ApiResult;
 

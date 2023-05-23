@@ -9,7 +9,7 @@ import org.springframework.stereotype.Service;
 import com.fresh.voc.model.voc.Compensation;
 import com.fresh.voc.model.voc.Voc;
 import com.fresh.voc.repository.voc.CompensationRepository;
-import com.fresh.voc.service.dto.CompensationCreateRequest;
+import com.fresh.voc.service.dto.request.CompensationCreateRequest;
 import com.fresh.voc.service.dto.CompensationSearchDto;
 import com.fresh.voc.service.dto.VocDetailDto;
 import com.fresh.voc.service.dto.VocDto;

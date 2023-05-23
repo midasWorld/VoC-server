@@ -6,10 +6,10 @@ import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.notNullValue;
 import static org.hamcrest.Matchers.nullValue;
 import static org.mockito.BDDMockito.given;
-import static org.mockito.Mockito.doNothing;
-import static org.mockito.Mockito.doThrow;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
+import static org.mockito.BDDMockito.then;
+import static org.mockito.BDDMockito.willDoNothing;
+import static org.mockito.BDDMockito.willThrow;
+import static org.mockito.Mockito.never;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
@@ -98,7 +98,9 @@ class VocRestControllerTest {
 		).andDo(print());
 
 		// then
-		verify(vocService, times(1)).getAllVoc();
+		then(vocService)
+			.should()
+			.getAllVoc();
 
 		resultActions
 			.andExpect(status().isOk())
@@ -115,7 +117,8 @@ class VocRestControllerTest {
 		String request = objectMapper.writeValueAsString(vocCreateRequest);
 		String response = objectMapper.writeValueAsString(new ApiResult<>(true, vocId, null));
 
-		given(vocService.create(vocCreateRequest)).willReturn(vocId);
+		given(vocService.create(vocCreateRequest))
+			.willReturn(vocId);
 
 	  // when
 		ResultActions resultActions = mockMvc.perform(
@@ -125,7 +128,8 @@ class VocRestControllerTest {
 		).andDo(print());
 
 		// then
-		verify(vocService, times(1))
+		then(vocService)
+			.should()
 			.create(vocCreateRequest);
 
 		resultActions
@@ -141,6 +145,9 @@ class VocRestControllerTest {
 
 		String request = objectMapper.writeValueAsString(vocCreateRequest);
 
+		given(vocService.create(vocCreateRequest))
+			.willReturn(1L);
+
 		// when
 		ResultActions resultActions = mockMvc.perform(
 			post("/api/voc")
@@ -149,6 +156,10 @@ class VocRestControllerTest {
 		).andDo(print());
 
 		// then
+		then(vocService)
+			.should(never())
+			.create(vocCreateRequest);
+
 		resultActions
 			.andExpect(status().isBadRequest())
 			.andExpect(handler().handlerType(VocRestController.class))
@@ -166,6 +177,9 @@ class VocRestControllerTest {
 
 		String request = objectMapper.writeValueAsString(vocCreateRequest);
 
+		given(vocService.create(vocCreateRequest))
+			.willReturn(1L);
+
 		// when
 		ResultActions resultActions = mockMvc.perform(
 			post("/api/voc")
@@ -174,6 +188,10 @@ class VocRestControllerTest {
 		).andDo(print());
 
 		// then
+		then(vocService)
+			.should(never())
+			.create(vocCreateRequest);
+
 		resultActions
 			.andExpect(status().isBadRequest())
 			.andExpect(handler().handlerType(VocRestController.class))
@@ -191,6 +209,9 @@ class VocRestControllerTest {
 
 		String request = objectMapper.writeValueAsString(vocCreateRequest);
 
+		given(vocService.create(vocCreateRequest))
+			.willReturn(1L);
+
 		// when
 		ResultActions resultActions = mockMvc.perform(
 			post("/api/voc")
@@ -199,6 +220,10 @@ class VocRestControllerTest {
 		).andDo(print());
 
 		// then
+		then(vocService)
+			.should(never())
+			.create(vocCreateRequest);
+
 		resultActions
 			.andExpect(status().isBadRequest())
 			.andExpect(handler().handlerType(VocRestController.class))
@@ -216,6 +241,9 @@ class VocRestControllerTest {
 
 		String request = objectMapper.writeValueAsString(vocCreateRequest);
 
+		given(vocService.create(vocCreateRequest))
+			.willReturn(1L);
+
 		// when
 		ResultActions resultActions = mockMvc.perform(
 			post("/api/voc")
@@ -224,6 +252,10 @@ class VocRestControllerTest {
 		).andDo(print());
 
 		// then
+		then(vocService)
+			.should(never())
+			.create(vocCreateRequest);
+
 		resultActions
 			.andExpect(status().isBadRequest())
 			.andExpect(handler().handlerType(VocRestController.class))
@@ -244,8 +276,9 @@ class VocRestControllerTest {
 
 		String errorMessage = "존재하지 않는 사원 ID 입니다.";
 
-		doThrow(new IllegalArgumentException(errorMessage))
-			.when(vocService).create(vocCreateRequest);
+		willThrow(new IllegalArgumentException(errorMessage))
+			.given(vocService)
+			.create(vocCreateRequest);
 
 		// when
 		ResultActions resultActions = mockMvc.perform(
@@ -254,7 +287,8 @@ class VocRestControllerTest {
 				.content(request)
 		).andDo(print());
 
-		verify(vocService, times(1))
+		then(vocService)
+			.should()
 			.create(vocCreateRequest);
 
 		// then
@@ -290,7 +324,8 @@ class VocRestControllerTest {
 		);
 
 		// then
-		verify(vocService, times(1))
+		then(vocService)
+			.should()
 			.createPenalty(vocId, penaltyCreateRequest);
 
 		resultActions
@@ -309,8 +344,9 @@ class VocRestControllerTest {
 
 		String request = objectMapper.writeValueAsString(penaltyCreateRequest);
 
-		doThrow(IllegalArgumentException.class)
-			.when(vocService).createPenalty(vocId, penaltyCreateRequest);
+		willThrow(new IllegalArgumentException())
+			.given(vocService)
+			.createPenalty(vocId, penaltyCreateRequest);
 
 		// when
 		ResultActions resultActions = mockMvc.perform(
@@ -320,6 +356,10 @@ class VocRestControllerTest {
 		).andDo(print());
 
 		// then
+		then(vocService)
+			.should()
+			.createPenalty(vocId, penaltyCreateRequest);
+
 		resultActions
 			.andExpect(status().isBadRequest())
 			.andExpect(handler().handlerType(VocRestController.class))
@@ -339,6 +379,9 @@ class VocRestControllerTest {
 		PenaltyCreateRequest penaltyCreateRequest = new PenaltyCreateRequest(invalidContent, 10000L);
 		String request = objectMapper.writeValueAsString(penaltyCreateRequest);
 
+		given(vocService.createPenalty(vocId, penaltyCreateRequest))
+			.willReturn(1L);
+
 		// when
 		ResultActions resultActions = mockMvc.perform(
 			post("/api/voc/{vocId}/penalties", vocId)
@@ -347,6 +390,10 @@ class VocRestControllerTest {
 		).andDo(print());
 
 		// then
+		then(vocService)
+			.should(never())
+			.createPenalty(vocId, penaltyCreateRequest);
+
 		resultActions
 			.andExpect(status().isBadRequest())
 			.andExpect(handler().handlerType(VocRestController.class))
@@ -365,6 +412,9 @@ class VocRestControllerTest {
 		PenaltyCreateRequest penaltyCreateRequest = new PenaltyCreateRequest(invalidContent, 10000L);
 		String request = objectMapper.writeValueAsString(penaltyCreateRequest);
 
+		given(vocService.createPenalty(vocId, penaltyCreateRequest))
+			.willReturn(1L);
+
 		// when
 		ResultActions resultActions = mockMvc.perform(
 			post("/api/voc/{vocId}/penalties", vocId)
@@ -373,6 +423,10 @@ class VocRestControllerTest {
 		).andDo(print());
 
 		// then
+		then(vocService)
+			.should(never())
+			.createPenalty(vocId, penaltyCreateRequest);
+
 		resultActions
 			.andExpect(status().isBadRequest())
 			.andExpect(handler().handlerType(VocRestController.class))
@@ -383,13 +437,16 @@ class VocRestControllerTest {
 	}
 
 	@Test
-	@DisplayName("패널티 등록 시, 패널티 금액이 0 미망니면 실패하고 400 코드를 반환한다.")
+	@DisplayName("패널티 등록 시, 패널티 금액이 0 미만이면 실패하고 400 코드를 반환한다.")
 	void failCreatePenalty_lessThanZeroAmount() throws Exception {
 		// given
 		Long vocId = 1L;
 		Long invalidAmount = -1L;
 		PenaltyCreateRequest penaltyCreateRequest = new PenaltyCreateRequest("배상금 지급", invalidAmount);
 		String request = objectMapper.writeValueAsString(penaltyCreateRequest);
+
+		given(vocService.createPenalty(vocId, penaltyCreateRequest))
+			.willReturn(1L);
 
 		// when
 		ResultActions resultActions = mockMvc.perform(
@@ -399,6 +456,10 @@ class VocRestControllerTest {
 		).andDo(print());
 
 		// then
+		then(vocService)
+			.should(never())
+			.createPenalty(vocId, penaltyCreateRequest);
+
 		resultActions
 			.andExpect(status().isBadRequest())
 			.andExpect(handler().handlerType(VocRestController.class))
@@ -415,8 +476,9 @@ class VocRestControllerTest {
 		Long vocId = 1L;
 		Long penaltyId = 1L;
 
-		doNothing()
-			.when(vocService).confirmPenalty(vocId, penaltyId);
+		willDoNothing()
+			.given(vocService)
+			.confirmPenalty(vocId, penaltyId);
 
 		// when
 		ResultActions resultActions = mockMvc.perform(
@@ -425,7 +487,8 @@ class VocRestControllerTest {
 		);
 
 		// then
-		verify(vocService, times(1))
+		then(vocService)
+			.should()
 			.confirmPenalty(vocId, penaltyId);
 
 		resultActions
@@ -442,8 +505,9 @@ class VocRestControllerTest {
 		Long vocId = 1L;
 		Long penaltyId = 1L;
 
-		doThrow(IllegalArgumentException.class)
-			.when(vocService).confirmPenalty(vocId, penaltyId);
+		willThrow(new IllegalArgumentException())
+			.given(vocService)
+			.confirmPenalty(vocId, penaltyId);
 
 		// when
 		ResultActions resultActions = mockMvc.perform(
@@ -452,7 +516,8 @@ class VocRestControllerTest {
 		);
 
 		// then
-		verify(vocService, times(1))
+		then(vocService)
+			.should()
 			.confirmPenalty(vocId, penaltyId);
 
 		resultActions

@@ -7,6 +7,7 @@ import static org.hamcrest.Matchers.samePropertyValuesAs;
 import java.util.List;
 
 import javax.persistence.EntityManager;
+import javax.transaction.Transactional;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -33,7 +34,7 @@ class VocRepositoryTest {
 	EntityManager entityManager;
 
 	@Test
-	// @Transactional
+	@Transactional
 	@DisplayName("VOC 패치 조인 조회가 성공한다. (with 사원, 패널티, 배상)")
 	void successGetVocAll() {
 	  // given

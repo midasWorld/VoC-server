@@ -27,7 +27,7 @@ import com.fresh.voc.model.voc.Penalty;
 import com.fresh.voc.model.voc.Voc;
 import com.fresh.voc.service.dto.PenaltyCreateRequest;
 import com.fresh.voc.service.dto.VocCreateRequest;
-import com.fresh.voc.service.dto.VocDto;
+import com.fresh.voc.service.dto.VocSearchDto;
 
 @Transactional
 @SpringBootTest
@@ -58,14 +58,14 @@ class VocServiceTest {
 		entityManager.flush();
 		entityManager.clear();
 
-		VocDto expected = new VocDto(voc, penalty, compensation);
+		VocSearchDto expected = new VocSearchDto(voc, penalty, compensation);
 
 		// when
-		List<VocDto> allVoc = vocService.getAllVoc();
+		List<VocSearchDto> allVoc = vocService.getAllVoc();
 
 	  // then
 	  assertThat(allVoc.size(), greaterThanOrEqualTo(1));
-		VocDto lastVoc = allVoc.get(allVoc.size() - 1);
+		VocSearchDto lastVoc = allVoc.get(allVoc.size() - 1);
 		assertThat(lastVoc, samePropertyValuesAs(expected, "compensation"));
 		assertThat(lastVoc.getCompensation(), samePropertyValuesAs(expected.getCompensation()));
 	}

@@ -243,6 +243,8 @@ class VocServiceTest {
 		entityManager.persist(person);
 		entityManager.persist(voc);
 		entityManager.persist(penalty);
+		entityManager.flush();
+		entityManager.clear();
 
 		PenaltyCreateRequest request = new PenaltyCreateRequest("배상금 지급", 10000L);
 

@@ -45,11 +45,10 @@ public class VocService {
 
 	@Transactional
 	public Long createPenalty(Long vocId, PenaltyCreateRequest request) {
-		Voc voc = vocRepository.findById(vocId)
+		Voc voc = vocRepository.findWithPenaltyAndCompensationById(vocId)
 			.orElseThrow(() -> new IllegalArgumentException("voc not exists. id=" + vocId));
 
-		boolean alreadyExists = penaltyRepository.existsByVoc(voc);
-		if (alreadyExists) {
+		if (voc.getPenalty() != null && voc.getPenalty().getId() != null) {
 			throw new IllegalArgumentException("penalty already exists. vocId=" + voc.getId());
 		}
 

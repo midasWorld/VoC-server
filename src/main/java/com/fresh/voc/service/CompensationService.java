@@ -28,6 +28,11 @@ public class CompensationService {
 		VocDto vocDto = vocGiverService.getVocById(request.getVocId());
 		Voc voc = vocDto.toEntity();
 
+		boolean alreadyExists = compensationRepository.existsByVoc(voc);
+		if (alreadyExists) {
+			throw new IllegalArgumentException("compensation already exists. vocId=" + voc.getId());
+		}
+
 		Compensation compensation = new Compensation(request.getAmount(), voc);
 		compensationRepository.save(compensation);
 

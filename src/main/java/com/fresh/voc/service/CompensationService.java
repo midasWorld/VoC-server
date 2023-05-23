@@ -1,6 +1,7 @@
 package com.fresh.voc.service;
 
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
@@ -10,6 +11,7 @@ import com.fresh.voc.model.voc.Voc;
 import com.fresh.voc.repository.voc.CompensationRepository;
 import com.fresh.voc.service.dto.CompensationCreateRequest;
 import com.fresh.voc.service.dto.CompensationSearchDto;
+import com.fresh.voc.service.dto.VocDetailDto;
 import com.fresh.voc.service.dto.VocDto;
 
 import lombok.RequiredArgsConstructor;
@@ -33,8 +35,15 @@ public class CompensationService {
 	}
 
 	public List<CompensationSearchDto> getAllCompensation() {
-		return compensationRepository.findAllWithVoc().stream()
-			.map(CompensationSearchDto::new)
+		List<Compensation> allCompensation = compensationRepository.findAll();
+
+		List<Long> vocIds = allCompensation.stream()
+			.map(c -> c.getVoc().getId())
+			.collect(Collectors.toList());
+		Map<Long, VocDetailDto> mapAllVoc = vocGiverService.getAllVocDetail(vocIds);
+
+		return allCompensation.stream()
+			.map(c -> new CompensationSearchDto(c, mapAllVoc.get(c.getVoc().getId())))
 			.collect(Collectors.toList());
 	}
 }

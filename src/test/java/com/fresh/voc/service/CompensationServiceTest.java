@@ -133,6 +133,8 @@ class CompensationServiceTest {
 		entityManager.persist(voc);
 		entityManager.persist(penalty);
 		entityManager.persist(compensation);
+		entityManager.flush();
+		entityManager.clear();
 
 		CompensationCreateRequest request = new CompensationCreateRequest(20000L, voc.getId());
 

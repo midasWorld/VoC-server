@@ -21,7 +21,7 @@ public class VocGiverService {
 	private final VocRepository vocRepository;
 
 	public VocDto getVocById(Long id) {
-		Voc voc = vocRepository.findById(id)
+		Voc voc = vocRepository.findWithPenaltyAndCompensationById(id)
 			.orElseThrow(() -> new IllegalArgumentException("voc not exists. id=" + id));
 
 		return new VocDto(voc);

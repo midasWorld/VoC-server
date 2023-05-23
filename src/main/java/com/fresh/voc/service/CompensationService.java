@@ -26,13 +26,12 @@ public class CompensationService {
 
 	public Long create(CompensationCreateRequest request) {
 		VocDto vocDto = vocGiverService.getVocById(request.getVocId());
-		Voc voc = vocDto.toEntity();
 
-		boolean alreadyExists = compensationRepository.existsByVoc(voc);
-		if (alreadyExists) {
-			throw new IllegalArgumentException("compensation already exists. vocId=" + voc.getId());
+		if (vocDto.getCompensation() != null && vocDto.getCompensation().getId() != null) {
+			throw new IllegalArgumentException("compensation already exists. vocId=" + vocDto.getId());
 		}
 
+		Voc voc = vocDto.toEntity();
 		Compensation compensation = new Compensation(request.getAmount(), voc);
 		compensationRepository.save(compensation);
 

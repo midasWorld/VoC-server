@@ -6,11 +6,13 @@ import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.notNullValue;
 import static org.hamcrest.Matchers.nullValue;
 import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
@@ -40,6 +42,7 @@ import com.fresh.voc.model.voc.Compensation;
 import com.fresh.voc.model.voc.Penalty;
 import com.fresh.voc.model.voc.Voc;
 import com.fresh.voc.service.VocService;
+import com.fresh.voc.service.dto.PenaltyCreateRequest;
 import com.fresh.voc.service.dto.VocCreateRequest;
 import com.fresh.voc.service.dto.VocDto;
 import com.fresh.voc.web.ApiResult;
@@ -263,5 +266,201 @@ class VocRestControllerTest {
 			.andExpect(jsonPath("$.response", nullValue()))
 			.andExpect(jsonPath("$.error", notNullValue()))
 			.andExpect(jsonPath("$.error.message", is(errorMessage)));
+	}
+
+	@Test
+	@DisplayName("패널티 등록에 성공하고 200 코드를 반환한다.")
+	void successCreatePenalty() throws Exception {
+	  // given
+		Long vocId = 1L;
+		Long expectedPenaltyId = 1L;
+		PenaltyCreateRequest penaltyCreateRequest = new PenaltyCreateRequest("배상금 지급", 10000L);
+
+		String request = objectMapper.writeValueAsString(penaltyCreateRequest);
+		String response = objectMapper.writeValueAsString(new ApiResult<>(true, expectedPenaltyId, null));
+
+		given(vocService.createPenalty(vocId, penaltyCreateRequest))
+			.willReturn(expectedPenaltyId);
+
+		// when
+		ResultActions resultActions = mockMvc.perform(
+			post("/api/voc/{vocId}/penalties", vocId)
+				.contentType(APPLICATION_JSON)
+				.content(request)
+		);
+
+		// then
+		verify(vocService, times(1))
+			.createPenalty(vocId, penaltyCreateRequest);
+
+		resultActions
+			.andExpect(status().isOk())
+			.andExpect(handler().handlerType(VocRestController.class))
+			.andExpect(handler().methodName("createPenalty"))
+			.andExpect(content().string(response));
+	}
+
+	@Test
+	@DisplayName("패널티 등록 시, 존재하지 않는 VOC 인 경우 실패하고 400 코드를 반환한다.")
+	void failCreatePenalty_notExistsVoc() throws Exception {
+		// given
+		Long vocId = 1L;
+		PenaltyCreateRequest penaltyCreateRequest = new PenaltyCreateRequest("배상금 지급", 10000L);
+
+		String request = objectMapper.writeValueAsString(penaltyCreateRequest);
+
+		doThrow(IllegalArgumentException.class)
+			.when(vocService).createPenalty(vocId, penaltyCreateRequest);
+
+		// when
+		ResultActions resultActions = mockMvc.perform(
+			post("/api/voc/{vocId}/penalties", vocId)
+				.contentType(APPLICATION_JSON)
+				.content(request)
+		).andDo(print());
+
+		// then
+		resultActions
+			.andExpect(status().isBadRequest())
+			.andExpect(handler().handlerType(VocRestController.class))
+			.andExpect(handler().methodName("createPenalty"))
+			.andExpect(jsonPath("$.success", is(false)))
+			.andExpect(jsonPath("$.response", nullValue()))
+			.andExpect(jsonPath("$.error", notNullValue()));
+	}
+
+	//
+	@Test
+	@DisplayName("패널티 등록 시, 패널티 내용이 Null 이면 실패하고 400 코드를 반환한다.")
+	void failCreatePenalty_nullContent() throws Exception {
+		// given
+		Long vocId = 1L;
+		String invalidContent = null;
+		PenaltyCreateRequest penaltyCreateRequest = new PenaltyCreateRequest(invalidContent, 10000L);
+		String request = objectMapper.writeValueAsString(penaltyCreateRequest);
+
+		// when
+		ResultActions resultActions = mockMvc.perform(
+			post("/api/voc/{vocId}/penalties", vocId)
+				.contentType(APPLICATION_JSON)
+				.content(request)
+		).andDo(print());
+
+		// then
+		resultActions
+			.andExpect(status().isBadRequest())
+			.andExpect(handler().handlerType(VocRestController.class))
+			.andExpect(handler().methodName("createPenalty"))
+			.andExpect(jsonPath("$.success", is(false)))
+			.andExpect(jsonPath("$.response", nullValue()))
+			.andExpect(jsonPath("$.error", notNullValue()));
+	}
+
+	@Test
+	@DisplayName("패널티 등록 시, 패널티 내용이 빈값이면 실패하고 400 코드를 반환한다.")
+	void failCreatePenalty_emptyContent() throws Exception {
+		// given
+		Long vocId = 1L;
+		String invalidContent = "";
+		PenaltyCreateRequest penaltyCreateRequest = new PenaltyCreateRequest(invalidContent, 10000L);
+		String request = objectMapper.writeValueAsString(penaltyCreateRequest);
+
+		// when
+		ResultActions resultActions = mockMvc.perform(
+			post("/api/voc/{vocId}/penalties", vocId)
+				.contentType(APPLICATION_JSON)
+				.content(request)
+		).andDo(print());
+
+		// then
+		resultActions
+			.andExpect(status().isBadRequest())
+			.andExpect(handler().handlerType(VocRestController.class))
+			.andExpect(handler().methodName("createPenalty"))
+			.andExpect(jsonPath("$.success", is(false)))
+			.andExpect(jsonPath("$.response", nullValue()))
+			.andExpect(jsonPath("$.error", notNullValue()));
+	}
+
+	@Test
+	@DisplayName("패널티 등록 시, 패널티 금액이 0 미망니면 실패하고 400 코드를 반환한다.")
+	void failCreatePenalty_lessThanZeroAmount() throws Exception {
+		// given
+		Long vocId = 1L;
+		Long invalidAmount = -1L;
+		PenaltyCreateRequest penaltyCreateRequest = new PenaltyCreateRequest("배상금 지급", invalidAmount);
+		String request = objectMapper.writeValueAsString(penaltyCreateRequest);
+
+		// when
+		ResultActions resultActions = mockMvc.perform(
+			post("/api/voc/{vocId}/penalties", vocId)
+				.contentType(APPLICATION_JSON)
+				.content(request)
+		).andDo(print());
+
+		// then
+		resultActions
+			.andExpect(status().isBadRequest())
+			.andExpect(handler().handlerType(VocRestController.class))
+			.andExpect(handler().methodName("createPenalty"))
+			.andExpect(jsonPath("$.success", is(false)))
+			.andExpect(jsonPath("$.response", nullValue()))
+			.andExpect(jsonPath("$.error", notNullValue()));
+	}
+
+	@Test
+	@DisplayName("패널티 승인 등록에 성공하고 200 코드를 반환한다.")
+	void successPenaltyConfirmed() throws Exception {
+		// given
+		Long vocId = 1L;
+		Long penaltyId = 1L;
+
+		doNothing()
+			.when(vocService).confirmPenalty(vocId, penaltyId);
+
+		// when
+		ResultActions resultActions = mockMvc.perform(
+			patch("/api/voc/{vocId}/penalties/{penaltyId}/confirm", vocId, penaltyId)
+				.contentType(APPLICATION_JSON)
+		);
+
+		// then
+		verify(vocService, times(1))
+			.confirmPenalty(vocId, penaltyId);
+
+		resultActions
+			.andExpect(status().isOk())
+			.andExpect(handler().handlerType(VocRestController.class))
+			.andExpect(handler().methodName("confirmPenalty"))
+			.andExpect(content().string(""));
+	}
+
+	@Test
+	@DisplayName("존재하지 않는 패널티 승인 등록 시, 실패하고 400코드를 반환한다.")
+	void failPenaltyConfirmed_notExistsPenalty() throws Exception {
+		// given
+		Long vocId = 1L;
+		Long penaltyId = 1L;
+
+		doThrow(IllegalArgumentException.class)
+			.when(vocService).confirmPenalty(vocId, penaltyId);
+
+		// when
+		ResultActions resultActions = mockMvc.perform(
+			patch("/api/voc/{vocId}/penalties/{penaltyId}/confirm", vocId, penaltyId)
+				.contentType(APPLICATION_JSON)
+		);
+
+		// then
+		verify(vocService, times(1))
+			.confirmPenalty(vocId, penaltyId);
+
+		resultActions
+			.andExpect(status().isBadRequest())
+			.andExpect(handler().handlerType(VocRestController.class))
+			.andExpect(handler().methodName("confirmPenalty"))
+			.andExpect(jsonPath("$.success", is(false)))
+			.andExpect(jsonPath("$.response", nullValue()))
+			.andExpect(jsonPath("$.error", notNullValue()));
 	}
 }

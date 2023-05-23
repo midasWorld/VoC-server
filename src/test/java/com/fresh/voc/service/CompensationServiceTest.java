@@ -117,6 +117,30 @@ class CompensationServiceTest {
 			compensationService.create(request);
 		});
 	}
+	
+	@Test
+	@DisplayName("해당 VOC 에 배상이 이미 존재하면 실패한다.")
+	void failCreateCompensation_alreadyCompensationExists() {
+	  // given
+		Company company = new Company("999-99-99999", "더미 회사", CompanyType.SHIPPING, "02-999-9999");
+		Person person = new Person("더미 기사", company, "010-1111-1111");
+		Voc voc = new Voc(SHIPPING, person, "다른 장소에 배송");
+		Penalty penalty = new Penalty("물품 금액 전액 배상", 20000L, voc, true, false);
+		Compensation compensation = new Compensation(20000L, voc);
+
+		entityManager.persist(company);
+		entityManager.persist(person);
+		entityManager.persist(voc);
+		entityManager.persist(penalty);
+		entityManager.persist(compensation);
+
+		CompensationCreateRequest request = new CompensationCreateRequest(20000L, voc.getId());
+
+		// when, then
+		assertThrows(IllegalArgumentException.class, () -> {
+			compensationService.create(request);
+		});
+	}
 
 	@Test
 	@Transactional

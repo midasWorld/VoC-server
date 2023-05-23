@@ -48,6 +48,11 @@ public class VocService {
 		Voc voc = vocRepository.findById(vocId)
 			.orElseThrow(() -> new IllegalArgumentException("voc not exists. id=" + vocId));
 
+		boolean alreadyExists = penaltyRepository.existsByVoc(voc);
+		if (alreadyExists) {
+			throw new IllegalArgumentException("penalty already exists. vocId=" + voc.getId());
+		}
+
 		Penalty penalty = new Penalty(request.getContent(), request.getAmount(), voc);
 		penaltyRepository.save(penalty);
 

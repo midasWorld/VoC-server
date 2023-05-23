@@ -29,12 +29,13 @@ public class VocService {
 			.collect(Collectors.toList());
 	}
 
+	@Transactional
 	public Long create(VocCreateRequest request) {
 		Person person = personRepository.findById(request.getDueTargetId())
 			.orElseThrow(() -> new IllegalArgumentException("person not exists. id=" + request.getDueTargetId()));
 		Voc voc = new Voc(request.getDueType(), person, request.getDueReason());
-		Voc savedVoc = vocRepository.save(voc);
+		vocRepository.save(voc);
 
-		return savedVoc.getId();
+		return voc.getId();
 	}
 }

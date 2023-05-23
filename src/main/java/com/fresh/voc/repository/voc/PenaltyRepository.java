@@ -7,9 +7,12 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 import com.fresh.voc.model.voc.Penalty;
+import com.fresh.voc.model.voc.Voc;
 
 public interface PenaltyRepository extends JpaRepository<Penalty, Long> {
 
 	@Query("SELECT p FROM Penalty p WHERE p.id = :id AND p.voc.id = :vocId")
 	Optional<Penalty> findByIdAndVocId(Long id, @Param("vocId") Long vocId);
+
+	boolean existsByVoc(Voc voc);
 }

@@ -231,6 +231,28 @@ class VocServiceTest {
 	}
 
 	@Test
+	@DisplayName("해당 VOC 에 패널티가 이미 존재하면 실패한다.")
+	void failCreatePenalty_alreadyPenaltyExists() {
+		// given
+		Company company = getNewCompany();
+		Person person = getNewPerson(company);
+		Voc voc = getNewVoc(person);
+		Penalty penalty = getPenalty(voc, false);
+
+		entityManager.persist(company);
+		entityManager.persist(person);
+		entityManager.persist(voc);
+		entityManager.persist(penalty);
+
+		PenaltyCreateRequest request = new PenaltyCreateRequest("배상금 지급", 10000L);
+
+		// when, then
+		assertThrows(IllegalArgumentException.class, () -> {
+			vocService.createPenalty(voc.getId(), request);
+		});
+	}
+
+	@Test
 	@DisplayName("패널티 내용이 Null 이면 패널티 등록 실패한다.")
 	void failCreatePenalty_nullContent() {
 		// given

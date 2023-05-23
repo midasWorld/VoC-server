@@ -98,18 +98,6 @@ class VocServiceTest {
 		assertThat(savedVoc.getDueTarget(), is(voc.getDueTarget()));
 		assertThat(savedVoc.getDueReason(), is(voc.getDueReason()));
 	}
-
-	private Company getNewCompany() {
-		return new Company("999-99-99999", "더미 회사", CompanyType.SHIPPING, "02-999-9999");
-	}
-
-	private Person getNewPerson(Company company) {
-		return new Person("더미 기사", company, "010-1111-1111");
-	}
-
-	private Voc getNewVoc(Person person) {
-		return new Voc(SHIPPING, person, "다른 장소에 배송");
-	}
 	
 	@Test
 	@DisplayName("VOC 등록 시, 존재하지 않는 사원 ID로 등록하면 실패 한다.")
@@ -134,7 +122,6 @@ class VocServiceTest {
 		// given
 		Company company = getNewCompany();
 		Person person = getNewPerson(company);
-		Voc voc = getNewVoc(person);
 
 		entityManager.persist(company);
 		entityManager.persist(person);
@@ -157,7 +144,6 @@ class VocServiceTest {
 		// given
 		Company company = getNewCompany();
 		Person person = getNewPerson(company);
-		Voc voc = getNewVoc(person);
 
 		entityManager.persist(company);
 		entityManager.persist(person);
@@ -180,7 +166,6 @@ class VocServiceTest {
 		// given
 		Company company = getNewCompany();
 		Person person = getNewPerson(company);
-		Voc voc = getNewVoc(person);
 
 		entityManager.persist(company);
 		entityManager.persist(person);
@@ -195,5 +180,17 @@ class VocServiceTest {
 		assertThrows(ValidationException.class, () -> {
 			vocService.create(request);
 		});
+	}
+
+	private Company getNewCompany() {
+		return new Company("999-99-99999", "더미 회사", CompanyType.SHIPPING, "02-999-9999");
+	}
+
+	private Person getNewPerson(Company company) {
+		return new Person("더미 기사", company, "010-1111-1111");
+	}
+
+	private Voc getNewVoc(Person person) {
+		return new Voc(SHIPPING, person, "다른 장소에 배송");
 	}
 }

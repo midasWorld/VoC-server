@@ -55,6 +55,15 @@ public class Voc extends BaseEntity {
 	}
 
 	public Voc(DueType dueType, Person dueTarget, String dueReason, Penalty penalty, Compensation compensation) {
+		this(null, dueType, dueTarget, dueReason, penalty, compensation);
+	}
+
+	public Voc(Long id, DueType dueType, String dueReason) {
+		this(id, dueType, null, dueReason, null, null);
+	}
+
+	public Voc(Long id, DueType dueType, Person dueTarget, String dueReason, Penalty penalty, Compensation compensation) {
+		this.id = id;
 		this.dueType = dueType;
 		this.dueTarget = dueTarget;
 		this.dueReason = dueReason;

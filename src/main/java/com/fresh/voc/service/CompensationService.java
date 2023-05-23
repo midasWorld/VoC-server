@@ -31,4 +31,10 @@ public class CompensationService {
 
 		return compensation.getId();
 	}
+
+	public List<CompensationSearchDto> getAllCompensation() {
+		return compensationRepository.findAllWithVoc().stream()
+			.map(CompensationSearchDto::new)
+			.collect(Collectors.toList());
+	}
 }

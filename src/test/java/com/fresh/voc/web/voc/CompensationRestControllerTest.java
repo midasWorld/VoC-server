@@ -1,5 +1,7 @@
 package com.fresh.voc.web.voc;
 
+import static com.fresh.voc.model.voc.DueType.SHIPPING;
+import static java.util.stream.Collectors.toList;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.notNullValue;
 import static org.hamcrest.Matchers.nullValue;
@@ -7,12 +9,16 @@ import static org.mockito.BDDMockito.given;
 import static org.mockito.BDDMockito.then;
 import static org.mockito.Mockito.never;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.handler;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+
+import java.util.List;
+import java.util.stream.LongStream;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -28,8 +34,12 @@ import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.filter.CharacterEncodingFilter;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fresh.voc.model.common.Person;
+import com.fresh.voc.model.voc.Compensation;
+import com.fresh.voc.model.voc.Voc;
 import com.fresh.voc.service.CompensationService;
 import com.fresh.voc.service.dto.CompensationCreateRequest;
+import com.fresh.voc.service.dto.CompensationSearchDto;
 import com.fresh.voc.web.ApiResult;
 
 @MockBean(JpaMetamodelMappingContext.class)
@@ -55,6 +65,40 @@ class CompensationRestControllerTest {
 			.addFilters(new CharacterEncodingFilter("UTF-8", true))
 			.alwaysDo(print())
 			.build();
+	}
+
+	@Test
+	@DisplayName("배상 목록 조회에 성공한다.")
+	void successGetAllVoc() throws Exception {
+		// given
+		List<CompensationSearchDto> allCompensation = LongStream.range(1, 2).mapToObj(index -> {
+			Person person = new Person("더미 기사", null, "010-222-2222");
+			Voc voc = new Voc(SHIPPING, person, "배송 잘못 옴");
+			Compensation compensation = new Compensation(10000L, voc);
+			return new CompensationSearchDto(compensation);
+		}).collect(toList());
+
+		String response = objectMapper.writeValueAsString(
+			new ApiResult<>(true, allCompensation, null)
+		);
+
+		given(compensationService.getAllCompensation())
+			.willReturn(allCompensation);
+
+		// when
+		ResultActions resultActions = mockMvc.perform(
+			get("/api/compensation")
+				.contentType(APPLICATION_JSON)
+		).andDo(print());
+
+		// then
+		then(compensationService)
+			.should()
+			.getAllCompensation();
+
+		resultActions
+			.andExpect(status().isOk())
+			.andExpect(content().string(response));
 	}
 
 	@Test

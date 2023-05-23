@@ -28,7 +28,7 @@ public class VocGiverService {
 	}
 
 	public Map<Long, VocDetailDto> getAllVocDetail(List<Long> ids) {
-		return vocRepository.findAllWithPersonByIdIn(ids).stream()
+		return vocRepository.findAllWithPersonAndPenaltyAndCompensationByIdIn(ids).stream()
 			.map(VocDetailDto::new)
 			.collect(Collectors.toMap(VocDetailDto::getId, Function.identity()));
 	}

@@ -7,12 +7,15 @@ import java.util.List;
 import javax.validation.Valid;
 
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.fresh.voc.service.VocService;
+import com.fresh.voc.service.dto.PenaltyCreateRequest;
 import com.fresh.voc.service.dto.VocCreateRequest;
 import com.fresh.voc.service.dto.VocDto;
 import com.fresh.voc.web.ApiResult;
@@ -38,5 +41,17 @@ public class VocRestController {
 		Long vocId = vocService.create(request);
 
 		return ok(vocId);
+	}
+
+	@PostMapping("/{id}/penalties")
+	public ApiResult<Long> createPenalty(@PathVariable Long id, @Valid @RequestBody PenaltyCreateRequest request) {
+		Long penaltyId = vocService.createPenalty(id, request);
+
+		return ok(penaltyId);
+	}
+
+	@PatchMapping("/{id}/penalties/{penaltyId}/confirm")
+	public void confirmPenalty(@PathVariable Long id, @PathVariable Long penaltyId) {
+		vocService.confirmPenalty(id, penaltyId);
 	}
 }

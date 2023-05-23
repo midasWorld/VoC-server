@@ -40,12 +40,24 @@ public class Penalty extends BaseEntity {
 	@NotNull
 	private Boolean objected;
 
+	public Penalty(String content, Long amount, Voc voc) {
+		this(content, amount, voc, false, false);
+	}
+
 	public Penalty(String content, Long amount, Voc voc, Boolean confirmed, Boolean objected) {
 		this.content = content;
 		this.amount = amount;
 		this.voc = voc;
 		this.confirmed = confirmed;
 		this.objected = objected;
+	}
+
+	//== 비지니스 로직 ==//
+	public void confirm() {
+		if (this.confirmed) {
+			throw new IllegalArgumentException("penalty already confirmed.");
+		}
+		this.confirmed = true;
 	}
 
 	@Override

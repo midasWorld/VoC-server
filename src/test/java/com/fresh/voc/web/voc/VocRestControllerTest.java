@@ -44,7 +44,7 @@ import com.fresh.voc.model.voc.Voc;
 import com.fresh.voc.service.VocService;
 import com.fresh.voc.service.dto.request.PenaltyCreateRequest;
 import com.fresh.voc.service.dto.request.VocCreateRequest;
-import com.fresh.voc.service.dto.VocSearchDto;
+import com.fresh.voc.service.dto.VocSearchDetailDto;
 import com.fresh.voc.web.ApiResult;
 
 @MockBean(JpaMetamodelMappingContext.class)
@@ -76,12 +76,12 @@ class VocRestControllerTest {
 	@DisplayName("VOC 목록 조회에 성공한다.")
 	void successGetAllVoc() throws Exception {
 		// given
-		List<VocSearchDto> allVoc = LongStream.range(1, 2).mapToObj(index -> {
+		List<VocSearchDetailDto> allVoc = LongStream.range(1, 2).mapToObj(index -> {
 			Person person = new Person("더미 기사", null, "010-222-2222");
 			Voc voc = new Voc(SHIPPING, person, "배송 잘못 옴");
 			Penalty penalty = new Penalty("배상금 지급", 10000L, voc, true, false);
 			Compensation compensation = new Compensation(10000L, voc);
-			return new VocSearchDto(voc, penalty, compensation);
+			return new VocSearchDetailDto(voc, penalty, compensation);
 		}).collect(toList());
 
 		String response = objectMapper.writeValueAsString(

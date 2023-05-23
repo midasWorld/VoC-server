@@ -14,7 +14,7 @@ import com.fresh.voc.repository.voc.PenaltyRepository;
 import com.fresh.voc.repository.voc.VocRepository;
 import com.fresh.voc.service.dto.request.PenaltyCreateRequest;
 import com.fresh.voc.service.dto.request.VocCreateRequest;
-import com.fresh.voc.service.dto.VocSearchDto;
+import com.fresh.voc.service.dto.VocSearchDetailDto;
 
 import lombok.RequiredArgsConstructor;
 
@@ -27,9 +27,9 @@ public class VocService {
 	private final PersonRepository personRepository;
 	private final PenaltyRepository penaltyRepository;
 
-	public List<VocSearchDto> getAllVoc() {
+	public List<VocSearchDetailDto> getAllVoc() {
 		return vocRepository.findAllWithPersonAndPenaltyAndCompensation().stream()
-			.map(VocSearchDto::new)
+			.map(VocSearchDetailDto::new)
 			.collect(Collectors.toList());
 	}
 

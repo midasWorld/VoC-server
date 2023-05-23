@@ -10,7 +10,7 @@ import com.fresh.voc.model.voc.Voc;
 import lombok.Getter;
 
 @Getter
-public class VocSearchDto {
+public class VocSearchDetailDto {
 	private final Long id;
 	private final DueType dueType;
 	private final String dueTargetName;
@@ -20,11 +20,11 @@ public class VocSearchDto {
 	private Boolean objected;
 	private CompensationDto compensation;
 
-	public VocSearchDto(Voc voc) {
+	public VocSearchDetailDto(Voc voc) {
 		this(voc, voc.getPenalty(), voc.getCompensation());
 	}
 
-	public VocSearchDto(Voc voc, Penalty penalty, Compensation compensation) {
+	public VocSearchDetailDto(Voc voc, Penalty penalty, Compensation compensation) {
 		this.id = voc.getId();
 		this.dueType = voc.getDueType();
 		this.dueTargetName = voc.getDueTarget().getName();

@@ -12,13 +12,13 @@ import lombok.Getter;
 public class CompensationSearchDto {
 
 	private final Long amouont;
-	private final VocDetailDto voc;
+	private final VocSearchDto voc;
 
 	public CompensationSearchDto(Compensation compensation) {
-		this(compensation, new VocDetailDto(compensation.getVoc()));
+		this(compensation, new VocSearchDto(compensation.getVoc()));
 	}
 
-	public CompensationSearchDto(Compensation compensation, VocDetailDto voc) {
+	public CompensationSearchDto(Compensation compensation, VocSearchDto voc) {
 		this.amouont = compensation.getAmount();
 		this.voc = voc;
 	}

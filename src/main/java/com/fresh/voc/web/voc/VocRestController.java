@@ -15,9 +15,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.fresh.voc.service.VocService;
-import com.fresh.voc.service.dto.PenaltyCreateRequest;
-import com.fresh.voc.service.dto.VocCreateRequest;
-import com.fresh.voc.service.dto.VocSearchDto;
+import com.fresh.voc.service.dto.request.PenaltyCreateRequest;
+import com.fresh.voc.service.dto.request.VocCreateRequest;
+import com.fresh.voc.service.dto.VocSearchDetailDto;
 import com.fresh.voc.web.ApiResult;
 
 import lombok.RequiredArgsConstructor;
@@ -30,8 +30,8 @@ public class VocRestController {
 	private final VocService vocService;
 
 	@GetMapping
-	public ApiResult<List<VocSearchDto>> getAllVoc() {
-		List<VocSearchDto> allVoc = vocService.getAllVoc();
+	public ApiResult<List<VocSearchDetailDto>> getAllVoc() {
+		List<VocSearchDetailDto> allVoc = vocService.getAllVoc();
 
 		return ok(allVoc);
 	}

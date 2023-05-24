@@ -25,9 +25,9 @@ import com.fresh.voc.model.common.Person;
 import com.fresh.voc.model.voc.Compensation;
 import com.fresh.voc.model.voc.Penalty;
 import com.fresh.voc.model.voc.Voc;
-import com.fresh.voc.service.dto.PenaltyCreateRequest;
-import com.fresh.voc.service.dto.VocCreateRequest;
-import com.fresh.voc.service.dto.VocSearchDto;
+import com.fresh.voc.service.dto.request.PenaltyCreateRequest;
+import com.fresh.voc.service.dto.request.VocCreateRequest;
+import com.fresh.voc.service.dto.VocSearchDetailDto;
 
 @Transactional
 @SpringBootTest
@@ -58,14 +58,14 @@ class VocServiceTest {
 		entityManager.flush();
 		entityManager.clear();
 
-		VocSearchDto expected = new VocSearchDto(voc, penalty, compensation);
+		VocSearchDetailDto expected = new VocSearchDetailDto(voc, penalty, compensation);
 
 		// when
-		List<VocSearchDto> allVoc = vocService.getAllVoc();
+		List<VocSearchDetailDto> allVoc = vocService.getAllVoc();
 
 	  // then
 	  assertThat(allVoc.size(), greaterThanOrEqualTo(1));
-		VocSearchDto lastVoc = allVoc.get(allVoc.size() - 1);
+		VocSearchDetailDto lastVoc = allVoc.get(allVoc.size() - 1);
 		assertThat(lastVoc, samePropertyValuesAs(expected, "compensation"));
 		assertThat(lastVoc.getCompensation(), samePropertyValuesAs(expected.getCompensation()));
 	}
@@ -243,6 +243,8 @@ class VocServiceTest {
 		entityManager.persist(person);
 		entityManager.persist(voc);
 		entityManager.persist(penalty);
+		entityManager.flush();
+		entityManager.clear();
 
 		PenaltyCreateRequest request = new PenaltyCreateRequest("배상금 지급", 10000L);
 

@@ -2,7 +2,7 @@ package com.fresh.voc.service.dto;
 
 import org.apache.commons.lang3.builder.ToStringBuilder;
 
-import com.fresh.voc.model.voc.Compensation;
+import com.fresh.voc.model.common.Person;
 import com.fresh.voc.model.voc.DueType;
 import com.fresh.voc.model.voc.Penalty;
 import com.fresh.voc.model.voc.Voc;
@@ -13,29 +13,27 @@ import lombok.Getter;
 public class VocSearchDto {
 	private final Long id;
 	private final DueType dueType;
-	private final String dueTargetName;
 	private final String dueReason;
+	private String dueTargetName;
 	private String penaltyContent;
 	private Boolean confirmed;
 	private Boolean objected;
-	private CompensationDto compensation;
 
 	public VocSearchDto(Voc voc) {
-		this(voc, voc.getPenalty(), voc.getCompensation());
+		this(voc, voc.getDueTarget(), voc.getPenalty());
 	}
 
-	public VocSearchDto(Voc voc, Penalty penalty, Compensation compensation) {
+	public VocSearchDto(Voc voc, Person person, Penalty penalty) {
 		this.id = voc.getId();
 		this.dueType = voc.getDueType();
-		this.dueTargetName = voc.getDueTarget().getName();
 		this.dueReason = voc.getDueReason();
+		if (person != null) {
+			this.dueTargetName = person.getName();
+		}
 		if (penalty != null) {
 			this.penaltyContent = penalty.getContent();
 			this.confirmed = penalty.getConfirmed();
 			this.objected = penalty.getObjected();
-		}
-		if (compensation != null) {
-			this.compensation = new CompensationDto(compensation);
 		}
 	}
 
@@ -44,12 +42,11 @@ public class VocSearchDto {
 		return new ToStringBuilder(this)
 			.append("id", id)
 			.append("dueType", dueType)
-			.append("dueTargetName", dueTargetName)
 			.append("dueReason", dueReason)
+			.append("dueTargetName", dueTargetName)
 			.append("penaltyContent", penaltyContent)
 			.append("confirmed", confirmed)
 			.append("objected", objected)
-			.append("compensation", compensation)
 			.toString();
 	}
 }

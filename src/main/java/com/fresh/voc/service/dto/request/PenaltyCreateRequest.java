@@ -1,4 +1,4 @@
-package com.fresh.voc.service.dto;
+package com.fresh.voc.service.dto.request;
 
 import javax.validation.constraints.DecimalMin;
 import javax.validation.constraints.NotBlank;

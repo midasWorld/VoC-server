@@ -9,9 +9,9 @@ import org.springframework.stereotype.Service;
 import com.fresh.voc.model.voc.Compensation;
 import com.fresh.voc.model.voc.Voc;
 import com.fresh.voc.repository.voc.CompensationRepository;
-import com.fresh.voc.service.dto.CompensationCreateRequest;
+import com.fresh.voc.service.dto.request.CompensationCreateRequest;
 import com.fresh.voc.service.dto.CompensationSearchDto;
-import com.fresh.voc.service.dto.VocDetailDto;
+import com.fresh.voc.service.dto.VocSearchDto;
 import com.fresh.voc.service.dto.VocDto;
 
 import lombok.RequiredArgsConstructor;
@@ -26,13 +26,12 @@ public class CompensationService {
 
 	public Long create(CompensationCreateRequest request) {
 		VocDto vocDto = vocGiverService.getVocById(request.getVocId());
-		Voc voc = vocDto.toEntity();
 
-		boolean alreadyExists = compensationRepository.existsByVoc(voc);
-		if (alreadyExists) {
-			throw new IllegalArgumentException("compensation already exists. vocId=" + voc.getId());
+		if (vocDto.getCompensation() != null && vocDto.getCompensation().getId() != null) {
+			throw new IllegalArgumentException("compensation already exists. vocId=" + vocDto.getId());
 		}
 
+		Voc voc = vocDto.toEntity();
 		Compensation compensation = new Compensation(request.getAmount(), voc);
 		compensationRepository.save(compensation);
 
@@ -45,7 +44,7 @@ public class CompensationService {
 		List<Long> vocIds = allCompensation.stream()
 			.map(c -> c.getVoc().getId())
 			.collect(Collectors.toList());
-		Map<Long, VocDetailDto> mapAllVoc = vocGiverService.getAllVocDetail(vocIds);
+		Map<Long, VocSearchDto> mapAllVoc = vocGiverService.getAllVocDetail(vocIds);
 
 		return allCompensation.stream()
 			.map(c -> new CompensationSearchDto(c, mapAllVoc.get(c.getVoc().getId())))
